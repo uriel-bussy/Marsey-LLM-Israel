@@ -52,22 +52,41 @@ class TTSEngine(TTSInterface):
         Initialize the sherpa-onnx TTS engine.
         """
         # Construct the configuration for the TTS engine
-        tts_config = sherpa_onnx.OfflineTtsConfig(
-            model=sherpa_onnx.OfflineTtsModelConfig(
-                vits=sherpa_onnx.OfflineTtsVitsModelConfig(
-                    model=self.vits_model,
-                    lexicon=self.vits_lexicon,
-                    data_dir=self.vits_data_dir,
-                    dict_dir=self.vits_dict_dir,
-                    tokens=self.vits_tokens,
+
+        voices_file = os.path.join(os.path.dirname(self.vits_model), "voices.bin")
+        if os.path.exists(voices_file):
+            tts_config = sherpa_onnx.OfflineTtsConfig(
+                model=sherpa_onnx.OfflineTtsModelConfig(
+                    kokoro=sherpa_onnx.OfflineTtsKokoroModelConfig(
+                        model=self.vits_model,
+                        voices=voices_file,
+                        lexicon=self.vits_lexicon,
+                        data_dir=self.vits_data_dir,
+                        dict_dir=self.vits_dict_dir,
+                        tokens=self.vits_tokens,
+                    ),
+                    provider=self.provider,
+                    debug=self.debug,
+                    num_threads=self.num_threads,
                 ),
-                provider=self.provider,
-                debug=self.debug,
-                num_threads=self.num_threads,
-            ),
-            rule_fsts=self.tts_rule_fsts,
-            max_num_sentences=self.max_num_sentences,
-        )
+                rule_fsts=self.tts_rule_fsts,
+            )
+        else:
+            tts_config = sherpa_onnx.OfflineTtsConfig(
+                model=sherpa_onnx.OfflineTtsModelConfig(
+                    vits=sherpa_onnx.OfflineTtsVitsModelConfig(
+                        model=self.vits_model,
+                        lexicon=self.vits_lexicon,
+                        data_dir=self.vits_data_dir,
+                        dict_dir=self.vits_dict_dir,
+                        tokens=self.vits_tokens,
+                    ),
+                    provider=self.provider,
+                    debug=self.debug,
+                    num_threads=self.num_threads,
+                ),
+                rule_fsts=self.tts_rule_fsts,
+            )
 
         # Validate the configuration
         if not tts_config.validate():
