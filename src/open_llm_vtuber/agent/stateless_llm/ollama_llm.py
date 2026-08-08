@@ -37,6 +37,7 @@ class OllamaLLM(AsyncLLM):
                     json={
                         "model": model,
                         "keep_alive": keep_alive,
+                        "think": False,
                     },
                 )
             )
