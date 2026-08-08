@@ -1,0 +1,11 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "marsey.moc3",
+		"Textures": [
+			"marsey.2048/texture_00.png",
+			"marsey.2048/texture_01.png"
+		],
+		"DisplayInfo": "marsey.cdi3.json"
+	}
+}
